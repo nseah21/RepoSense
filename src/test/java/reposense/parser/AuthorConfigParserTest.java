@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import reposense.model.Author;
 import reposense.model.AuthorConfiguration;
 import reposense.model.RepoLocation;
+import reposense.report.ErrorSummary;
 
 public class AuthorConfigParserTest {
     private static final Path AUTHOR_CONFIG_EMPTY_LOCATION_FILE = loadResource(AuthorConfigParserTest.class,
@@ -104,7 +105,7 @@ public class AuthorConfigParserTest {
 
         AuthorConfiguration config = configs.get(0);
 
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
 
         Assertions.assertEquals(AUTHOR_CONFIG_NO_SPECIAL_CHARACTER_AUTHORS, config.getAuthorList());
@@ -112,7 +113,7 @@ public class AuthorConfigParserTest {
 
     @Test
     public void authorConfig_emptyLocation_success() throws Exception {
-        AuthorConfiguration expectedConfig = new AuthorConfiguration(new RepoLocation(""));
+        AuthorConfiguration expectedConfig = new AuthorConfiguration(new RepoLocation("", new ErrorSummary()));
 
         AuthorConfigCsvParser authorConfigCsvParser = new AuthorConfigCsvParser(AUTHOR_CONFIG_EMPTY_LOCATION_FILE);
         List<AuthorConfiguration> authorConfigs = authorConfigCsvParser.parse();
@@ -139,7 +140,7 @@ public class AuthorConfigParserTest {
 
         AuthorConfiguration config = configs.get(0);
 
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
 
         Assertions.assertEquals(AUTHOR_CONFIG_SPECIAL_CHARACTER_AUTHORS, config.getAuthorList());
@@ -169,7 +170,7 @@ public class AuthorConfigParserTest {
 
         AuthorConfiguration config = configs.get(0);
 
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
 
         Assertions.assertEquals(AUTHOR_CONFIG_NO_SPECIAL_CHARACTER_AUTHORS, config.getAuthorList());
@@ -222,7 +223,7 @@ public class AuthorConfigParserTest {
 
         AuthorConfiguration config = configs.get(0);
 
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
         Assertions.assertEquals(AUTHOR_DISPLAY_NAME_COMMAS_AND_DOUBLE_QUOTES_MAP, config.getAuthorDisplayNameMap());
 
@@ -242,19 +243,27 @@ public class AuthorConfigParserTest {
         Assertions.assertEquals(4, configs.size());
 
         AuthorConfiguration config = configs.get(0);
-        Assertions.assertEquals(new RepoLocation("https://github.com/reposense/reposense.git"), config.getLocation());
+        Assertions.assertEquals(
+                new RepoLocation("https://github.com/reposense/reposense.git", new ErrorSummary()),
+                config.getLocation());
         Assertions.assertEquals(defaultSpecifiedBranch, config.getBranch());
 
         config = configs.get(1);
-        Assertions.assertEquals(new RepoLocation("https://github.com/markbind/markbind.git"), config.getLocation());
+        Assertions.assertEquals(
+                new RepoLocation("https://github.com/markbind/markbind.git", new ErrorSummary()),
+                config.getLocation());
         Assertions.assertEquals(defaultSpecifiedBranch, config.getBranch());
 
         config = configs.get(2);
-        Assertions.assertEquals(new RepoLocation("https://github.com/TEAMMATES/teammates.git"), config.getLocation());
+        Assertions.assertEquals(
+                new RepoLocation("https://github.com/TEAMMATES/teammates.git", new ErrorSummary()),
+                config.getLocation());
         Assertions.assertEquals(defaultSpecifiedBranch, config.getBranch());
 
         config = configs.get(3);
-        Assertions.assertEquals(new RepoLocation("https://github.com/CATcher-org/CATcher.git"), config.getLocation());
+        Assertions.assertEquals(
+                new RepoLocation("https://github.com/CATcher-org/CATcher.git", new ErrorSummary()),
+                config.getLocation());
         Assertions.assertEquals(defaultSpecifiedBranch, config.getBranch());
     }
 
@@ -267,19 +276,20 @@ public class AuthorConfigParserTest {
         Assertions.assertEquals(4, configs.size());
 
         AuthorConfiguration config = configs.get(0);
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
 
         config = configs.get(1);
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION, new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("add-config-json", config.getBranch());
 
         config = configs.get(2);
-        Assertions.assertEquals(new RepoLocation("https://github.com/reposense/RepoSense.git"), config.getLocation());
+        Assertions.assertEquals(new RepoLocation("https://github.com/reposense/RepoSense.git", new ErrorSummary()),
+                config.getLocation());
         Assertions.assertEquals("release", config.getBranch());
 
         config = configs.get(3);
-        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense"), config.getLocation());
+        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense", new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("master", config.getBranch());
     }
 
@@ -292,23 +302,28 @@ public class AuthorConfigParserTest {
         Assertions.assertEquals(5, configs.size());
 
         AuthorConfiguration config = configs.get(0);
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION,
+                new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("add-config-json", config.getBranch());
 
         config = configs.get(1);
-        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION), config.getLocation());
+        Assertions.assertEquals(new RepoLocation(TEST_REPO_BETA_LOCATION,
+                new ErrorSummary()), config.getLocation());
         Assertions.assertEquals(TEST_REPO_BETA_MASTER_BRANCH, config.getBranch());
 
         config = configs.get(2);
-        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense"), config.getLocation());
+        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense",
+                new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("master", config.getBranch());
 
         config = configs.get(3);
-        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense"), config.getLocation());
+        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense",
+                new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("release", config.getBranch());
 
         config = configs.get(4);
-        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense"), config.getLocation());
+        Assertions.assertEquals(new RepoLocation("/Users/sikai/RepoSense",
+                new ErrorSummary()), config.getLocation());
         Assertions.assertEquals("gh-pages", config.getBranch());
     }
 }

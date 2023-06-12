@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import reposense.parser.InvalidLocationException;
 import reposense.parser.ParseException;
+import reposense.report.ErrorSummary;
 import reposense.system.LogsManager;
 
 /**
@@ -31,7 +32,7 @@ public class CliRunConfiguration implements RunConfiguration {
         List<RepoConfiguration> configs = new ArrayList<>();
         for (String locationString : cliArguments.getLocations()) {
             try {
-                configs.add(new RepoConfiguration(new RepoLocation(locationString)));
+                configs.add(new RepoConfiguration(new RepoLocation(locationString, new ErrorSummary())));
             } catch (InvalidLocationException ile) {
                 logger.log(Level.WARNING, ile.getMessage(), ile);
             }

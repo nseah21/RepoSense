@@ -9,6 +9,7 @@ import org.apache.commons.csv.CSVRecord;
 import reposense.model.FileType;
 import reposense.model.GroupConfiguration;
 import reposense.model.RepoLocation;
+import reposense.report.ErrorSummary;
 
 /**
  * Container for the values parsed from {@code group-config.csv} file.
@@ -78,7 +79,7 @@ public class GroupConfigCsvParser extends CsvParser<GroupConfiguration> {
      */
     private static GroupConfiguration findMatchingGroupConfiguration(List<GroupConfiguration> results,
             String location) throws InvalidLocationException {
-        GroupConfiguration config = new GroupConfiguration(new RepoLocation(location));
+        GroupConfiguration config = new GroupConfiguration(new RepoLocation(location, new ErrorSummary()));
 
         for (GroupConfiguration groupConfig : results) {
             if (groupConfig.getLocation().equals(config.getLocation())) {

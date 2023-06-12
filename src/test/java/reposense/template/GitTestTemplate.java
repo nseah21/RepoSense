@@ -28,6 +28,7 @@ import reposense.model.CommitHash;
 import reposense.model.FileTypeTest;
 import reposense.model.RepoConfiguration;
 import reposense.model.RepoLocation;
+import reposense.report.ErrorSummary;
 import reposense.util.FileUtil;
 import reposense.util.TestRepoCloner;
 
@@ -138,7 +139,7 @@ public class GitTestTemplate {
     }
 
     private static RepoConfiguration newRepoConfiguration() throws Exception {
-        return new RepoConfiguration(new RepoLocation(TEST_REPO_GIT_LOCATION), "master",
+        return new RepoConfiguration(new RepoLocation(TEST_REPO_GIT_LOCATION, new ErrorSummary()), "master",
                 EXTRA_OUTPUT_FOLDER_NAME_SUPPLIER.get());
     }
 

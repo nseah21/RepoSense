@@ -9,14 +9,10 @@ import java.util.Set;
  * Holds the data of set of repos that failed to analyze and the reasons for the failed operation.
  */
 public class ErrorSummary {
-    private static ErrorSummary instance = null;
-    private static Set<Map<String, String>> errorSet = new HashSet<>();
+    private Set<Map<String, String>> errorSet;
 
-    public static ErrorSummary getInstance() {
-        if (instance == null) {
-            instance = new ErrorSummary();
-        }
-        return instance;
+    public ErrorSummary() {
+        errorSet = new HashSet<>();
     }
 
     /**

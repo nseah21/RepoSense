@@ -18,6 +18,7 @@ import reposense.model.FileTypeTest;
 import reposense.model.RepoConfiguration;
 import reposense.model.RepoLocation;
 import reposense.model.StandaloneConfig;
+import reposense.report.ErrorSummary;
 import reposense.util.TestUtil;
 
 public class StandaloneConfigJsonParserTest {
@@ -56,12 +57,13 @@ public class StandaloneConfigJsonParserTest {
         author.setAuthorAliases(Arrays.asList("Yong Hao TENG"));
         author.setIgnoreGlobList(Arrays.asList("**.css", "**.html", "**.jade", "**.js"));
 
-        expectedGithubIdOnlyRepoconfig = new RepoConfiguration(new RepoLocation(TEST_DUMMY_LOCATION));
+        expectedGithubIdOnlyRepoconfig = new RepoConfiguration(
+                new RepoLocation(TEST_DUMMY_LOCATION, new ErrorSummary()));
         expectedGithubIdOnlyRepoconfig.setFormats(FileTypeTest.NO_SPECIFIED_FORMATS);
         expectedGithubIdOnlyRepoconfig.setAuthorList(Arrays.asList(new Author("yong24s")));
         expectedGithubIdOnlyRepoconfig.addAuthorEmailsToAuthorMapEntry(author, author.getEmails());
 
-        expectedFullRepoConfig = new RepoConfiguration(new RepoLocation(TEST_DUMMY_LOCATION));
+        expectedFullRepoConfig = new RepoConfiguration(new RepoLocation(TEST_DUMMY_LOCATION, new ErrorSummary()));
         expectedFullRepoConfig.setFormats(FileType.convertFormatStringsToFileTypes(
                 Arrays.asList("gradle", "jade", "java", "js", "md", "scss", "yml")));
         expectedFullRepoConfig.setIgnoreCommitList(Arrays.asList(new CommitHash(
@@ -110,7 +112,8 @@ public class StandaloneConfigJsonParserTest {
 
     private void assertSameConfig(RepoConfiguration expectedRepoConfig, StandaloneConfig actualStandaloneConfig)
             throws Exception {
-        RepoConfiguration actualRepoConfig = new RepoConfiguration(new RepoLocation(TEST_DUMMY_LOCATION));
+        RepoConfiguration actualRepoConfig = new RepoConfiguration(
+                new RepoLocation(TEST_DUMMY_LOCATION, new ErrorSummary()));
         actualRepoConfig.update(actualStandaloneConfig);
         TestUtil.compareRepoConfig(expectedRepoConfig, actualRepoConfig);
     }
