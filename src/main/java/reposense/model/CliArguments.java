@@ -35,7 +35,7 @@ public class CliArguments {
     private final int numAnalysisThreads;
     private final ZoneId zoneId;
     private final boolean isFindingPreviousAuthorsPerformed;
-    private final boolean shouldUseJsonPrettyPrinting;
+    private boolean shouldUseJsonPrettyPrinting;
     private boolean isTestMode = ArgsParser.DEFAULT_IS_TEST_MODE;
     private boolean isFreshClonePerformed = ArgsParser.DEFAULT_SHOULD_FRESH_CLONE;
 
@@ -219,6 +219,7 @@ public class CliArguments {
                 && this.isShallowCloningPerformed == otherCliArguments.isShallowCloningPerformed
                 && this.isAutomaticallyLaunching == otherCliArguments.isAutomaticallyLaunching
                 && this.isStandaloneConfigIgnored == otherCliArguments.isStandaloneConfigIgnored
+                && this.shouldUseJsonPrettyPrinting == otherCliArguments.shouldUseJsonPrettyPrinting
                 && this.numCloningThreads == otherCliArguments.numCloningThreads
                 && this.numAnalysisThreads == otherCliArguments.numAnalysisThreads
                 && Objects.equals(this.zoneId, otherCliArguments.zoneId)
@@ -457,6 +458,7 @@ public class CliArguments {
          * @param shouldUseJsonPrettyPrinting Should use JSON pretty printing.
          */
         public Builder shouldUseJsonPrettyPrinting(boolean shouldUseJsonPrettyPrinting) {
+            this.shouldUseJsonPrettyPrinting = shouldUseJsonPrettyPrinting;
             return this;
         }
 
