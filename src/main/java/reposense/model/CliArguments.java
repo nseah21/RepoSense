@@ -433,16 +433,6 @@ public class CliArguments {
         }
 
         /**
-         * Adds the {@code isTestMode} to CliArguments.
-         *
-         * @param isTestMode Is test mode.
-         */
-        public Builder isTestMode(boolean isTestMode) {
-            this.isTestMode = isTestMode;
-            return this;
-        }
-
-        /**
          * Adds the {@code isFreshClonePerformed} to CliArguments.
          *
          * @param isFreshClonePerformed Is fresh clone performed.
