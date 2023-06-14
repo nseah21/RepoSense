@@ -35,6 +35,7 @@ public class CliArguments {
     private final int numAnalysisThreads;
     private final ZoneId zoneId;
     private final boolean isFindingPreviousAuthorsPerformed;
+    private final boolean shouldUseJsonPrettyPrinting;
     private boolean isTestMode = ArgsParser.DEFAULT_IS_TEST_MODE;
     private boolean isFreshClonePerformed = ArgsParser.DEFAULT_SHOULD_FRESH_CLONE;
 
@@ -68,6 +69,7 @@ public class CliArguments {
         this.numAnalysisThreads = builder.numAnalysisThreads;
         this.zoneId = builder.zoneId;
         this.isFindingPreviousAuthorsPerformed = builder.isFindingPreviousAuthorsPerformed;
+        this.shouldUseJsonPrettyPrinting = builder.shouldUseJsonPrettyPrinting;
         this.isTestMode = builder.isTestMode;
         this.isFreshClonePerformed = builder.isFreshClonePerformed;
         this.locations = builder.locations;
@@ -151,6 +153,10 @@ public class CliArguments {
 
     public boolean isFreshClonePerformed() {
         return isFreshClonePerformed;
+    }
+
+    public boolean shouldUseJsonPrettyPrinting() {
+        return shouldUseJsonPrettyPrinting;
     }
 
     public List<String> getLocations() {
@@ -253,6 +259,7 @@ public class CliArguments {
         private boolean isFreshClonePerformed;
         private List<String> locations;
         private boolean isViewModeOnly;
+        private boolean shouldUseJsonPrettyPrinting;
         private Path reportDirectoryPath;
         private Path configFolderPath;
         private Path repoConfigFilePath;
@@ -441,6 +448,15 @@ public class CliArguments {
          */
         public Builder isFreshClonePerformed(boolean isFreshClonePerformed) {
             this.isFreshClonePerformed = isFreshClonePerformed;
+            return this;
+        }
+
+        /**
+         * Adds the {@code shouldUseJsonPrettyPrinting} to CliArguments.
+         *
+         * @param shouldUseJsonPrettyPrinting Should use JSON pretty printing.
+         */
+        public Builder shouldUseJsonPrettyPrinting(boolean shouldUseJsonPrettyPrinting) {
             return this;
         }
 
