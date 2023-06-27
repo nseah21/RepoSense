@@ -136,6 +136,7 @@
         c-stacked-bar-chart(
           v-bind:is-commit-diff="true",
           v-bind:diffstat="getCommitDiffstatWidths(slice)",
+          v-bind:user="filteredUser",
         )
 
 </template>

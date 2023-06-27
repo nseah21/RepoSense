@@ -1,28 +1,36 @@
 <template lang="pug">
 #summary
-  template(v-if="filterBreakdown")
-    .summary-chart__contrib--bar(
-      v-for="width in widths",
-      v-bind:style="{ width: `${width}%`,\
-        'background-color': color }",
-      v-bind:title="`${fileType}: ${fileTypeLinesChanged} lines, \
-        total: ${totalLinesChanged} lines (contribution from ${minDate} to \
-        ${maxDate})`"
-    )
-  template(v-else-if="isCommitDiff")
-    .summary-chart__contribution
-      .summary-chart__contrib(v-for="(width, color) in diffstat")
-        #summary
-          .summary-chart__contrib--bar(
-            v-bind:style="{ width: `${width}%`,\
+  .summary-chart__contribution
+    template(v-if="filterBreakdown")
+      .summary-chart__contrib(
+        v-for="(lengths, fileType) in fileTypeContributionBars"
+      )
+        .summary-chart__contrib--bar(
+          v-for="length in lengths",
+          v-bind:style="{ width: `${length}%`,\
             'background-color': color }",
-          )
+          v-bind:title="`${fileType}: ${fileTypeLinesChanged} lines, \
+            total: ${totalLinesChanged} lines (contribution from ${minDate} to \
+            ${maxDate})`"
+        )
+    template(v-else-if="isCommitDiff")
+      .summary-chart__contrib(
+        v-for="(width, color) in diffstat"
+      )
+        .summary-chart__contrib--bar(
+          v-bind:style="{ width: `${width}%`,\
+          'background-color': color }",
+        )
       br
-  template(v-else)
-    .summary-chart__contrib--bar(
-      v-for="width in widths",
-      v-bind:style="{ width: `${width}%` }"
-    )
+    template(v-else)
+      .summary-chart__contrib(
+        v-bind:title="`Total contribution from ${minDate} to ${maxDate}: \
+          ${totalLinesChanged} lines`"
+      )
+        .summary-chart__contrib--bar(
+          v-for="width in widths",
+          v-bind:style="{ width: `${width}%` }"
+        )
 </template>
 
 <script lang="ts">
@@ -46,10 +54,6 @@ export default {
       type: String,
       default: 'red',
     },
-    fileType: {
-      type: String,
-      default: '?',
-    },
     fileTypeLinesChanged: {
       type: Number,
       default: 0,
@@ -67,6 +71,10 @@ export default {
       default: '?',
     },
     diffstat: {
+      type: Object as PropType<{ [key: string]: number[] }>,
+      default: () => {},
+    },
+    fileTypeContributionBars: {
       type: Object as PropType<{ [key: string]: number[] }>,
       default: () => {},
     },
