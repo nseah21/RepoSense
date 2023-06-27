@@ -141,7 +141,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { PropType, defineComponent } from 'vue';
 import { mapState } from 'vuex';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import brokenLinkDisabler from '../mixin/brokenLinkMixin';
@@ -154,6 +154,7 @@ import {
   Commit,
   CommitResult,
   DailyCommit,
+  Repo,
   WeeklyCommit,
 } from '../types/types';
 import CommitsSortType from '../types/zoom';
@@ -180,6 +181,12 @@ export default defineComponent({
     cStackedBarChart,
   },
   mixins: [brokenLinkDisabler],
+  props: {
+    repos: {
+      type: Array as PropType<Repo[]>,
+      required: true,
+    },
+  },
   data() {
     return {
       ...zoomInitialState(),
@@ -320,7 +327,13 @@ export default defineComponent({
       let currentBarWidth = 0;
       const fullBarWidth = 100;
       const { insertions, deletions } = slice;
-      const contributionPerFullBar = 100;
+      const contributionPerFullBar = 1000;
+
+      // this.getTotalChangesInRepo();
+
+      // parseInt(this.info.zAvgCommitSize.toString(), 10);
+
+      // this.getAvgContributionSize();
 
       const result: { [key: string]: number[] } = {};
       // if (contributionPerFullBar === 0) {
@@ -487,6 +500,34 @@ export default defineComponent({
 
     getFontColor() {
       return window.getFontColor;
+    },
+
+    getAvgContributionSize() {
+      let totalContribution = 0;
+      for (let i = 0; i < this.filteredUser.commits.length; i += 1) {
+        totalContribution += this.filteredUser.commits[i].insertions + this.filteredUser.commits[i].deletions;
+      }
+      return totalContribution / this.filteredUser.commits.length;
+    },
+
+    getTotalChangesInRepo() {
+      let totalChanges = 0;
+      let totalCommits = 0;
+      this.repos.forEach((repo) => {
+        if (repo.location.location === this.filteredUser.location) {
+          repo.users?.forEach((user) => {
+            user.commits.forEach((commit) => {
+              totalChanges += commit.insertions;
+              totalChanges += commit.deletions;
+              totalCommits += 1;
+            });
+          });
+        }
+      });
+      if (totalCommits === 0) {
+        return 0;
+      }
+      return totalChanges / totalCommits;
     },
   },
 });

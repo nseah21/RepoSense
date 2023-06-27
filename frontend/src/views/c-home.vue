@@ -34,7 +34,7 @@
           .tab-content.panel-padding
             .tab-pane
               c-authorship#tab-authorship(v-if="tabType === 'authorship'")
-              c-zoom#tab-zoom(v-else-if="tabType === 'zoom'")
+              c-zoom#tab-zoom(v-else-if="tabType === 'zoom'" v-bind:repos="users")
               #tab-empty(v-else)
                 .title
                   h2 Welcome to this RepoSense report!

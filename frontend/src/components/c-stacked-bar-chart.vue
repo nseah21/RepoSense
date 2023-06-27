@@ -10,11 +10,14 @@
         ${maxDate})`"
     )
   template(v-else-if="isCommitDiff")
-    .summary-chart__contrib--bar(
-      v-for="(width, color) in diffstat",
-      v-bind:style="{ width: `${width}%`,\
-        'background-color': color }",
-    )
+    .summary-chart__contribution
+      .summary-chart__contrib(v-for="(width, color) in diffstat")
+        #summary
+          .summary-chart__contrib--bar(
+            v-bind:style="{ width: `${width}%`,\
+            'background-color': color }",
+          )
+      br
   template(v-else)
     .summary-chart__contrib--bar(
       v-for="width in widths",
