@@ -8,7 +8,7 @@
         .summary-chart__contrib--bar(
           v-for="length in lengths",
           v-bind:style="{ width: `${length}%`,\
-            'background-color': color }",
+            'background-color': fileTypeColors[fileType] }",
           v-bind:title="`${fileType}: ${fileTypeLinesChanged} lines, \
             total: ${totalLinesChanged} lines (contribution from ${minDate} to \
             ${maxDate})`"
@@ -76,6 +76,10 @@ export default {
     },
     fileTypeContributionBars: {
       type: Object as PropType<{ [key: string]: number[] }>,
+      default: () => {},
+    },
+    fileTypeColors: {
+      type: Object as PropType<{ [key: string]: string }>,
       default: () => {},
     },
   },

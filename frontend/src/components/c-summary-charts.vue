@@ -221,7 +221,7 @@
       c-stacked-bar-chart(
         v-bind:filter-breakdown="true",
         v-bind:widths="getContributionBars(user.checkedFileTypeContribution)",
-        v-bind:color="fileTypeColors[fileType]"
+        v-bind:fileTypeColors="fileTypeColors"
         v-bind:file-type-lines-changed="user.fileTypeContribution[fileType]",
         v-bind:total-lines-changed="user.checkedFileTypeContribution",
         v-bind:min-date="minDate",
