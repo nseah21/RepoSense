@@ -1,6 +1,10 @@
 <template lang="pug">
-#summary
-  .summary-chart__contribution
+#summary(
+  v-bind:styles="{'display': 'inline-block', 'overflow': 'hidden'}"
+)
+  .summary-chart__contribution(
+    v-bind:styles="{'display': 'inline-block'}"
+  )
     template(v-if="filterBreakdown")
       .summary-chart__contrib(
         v-for="(lengths, fileType) in fileTypeContributionBars"
@@ -16,6 +20,7 @@
     template(v-else-if="isCommitDiff")
       .summary-chart__contrib(
         v-for="(barWidths, color) in diffstat"
+        v-bind:styles="{'display': 'inline-block'}"
       )
         .summary-chart__contrib--bar(
           v-for="width in barWidths",

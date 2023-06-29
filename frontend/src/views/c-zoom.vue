@@ -91,7 +91,7 @@
       tabindex="-1",
       v-for="slice in day.commitResults",
       v-bind:key="slice.hash",
-      v-bind:class="{ 'message-body active': slice.messageBody !== '' }"
+      v-bind:class="{ 'message-body active': slice.messageBody !== '' }",
     )
       span.code-merge-icon(v-if="slice.isMergeCommit")
         font-awesome-icon(icon="code-merge")
@@ -588,6 +588,8 @@ export default defineComponent({
   /* Commit Message Body in Zoom Tab */
   .commit-message {
     border: 1px solid transparent;
+    display: block;
+    overflow: hidden;
     padding: 5px;
 
     &:focus,
