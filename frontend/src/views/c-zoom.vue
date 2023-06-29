@@ -5,11 +5,11 @@
   .toolbar--multiline(v-if="filteredUser.commits.length && totalCommitMessageBodyCount")
     a(
       v-if="expandedCommitMessagesCount < totalCommitMessageBodyCount",
-      v-on:click="toggleAllCommitMessagesBody(true)"
+      v-on:click="toggleAllCommitMessagesBody(true); toggleDiffstat(true);"
     ) show all commit messages
     a(
       v-if="expandedCommitMessagesCount > 0",
-      v-on:click="toggleAllCommitMessagesBody(false)"
+      v-on:click="toggleAllCommitMessagesBody(false); toggleDiffstat(false);"
     ) hide all commit messages
   .panel-heading
     .group-name
@@ -132,11 +132,12 @@
       .body(v-if="slice.messageBody !== ''", v-show="slice.isOpen")
         pre {{ slice.messageBody }}
           .dashed-border
-      c-stacked-bar-chart(
-        v-bind:is-commit-diff="true",
-        v-bind:diffstat="getCommitDiffstatWidths(slice)",
-        v-bind:user="filteredUser",
-      )
+      template(v-if="showDiffstat")
+        c-stacked-bar-chart(
+          v-bind:is-commit-diff="true",
+          v-bind:diffstat="getCommitDiffstatWidths(slice)",
+          v-bind:user="filteredUser",
+        )
 
 </template>
 
@@ -162,6 +163,7 @@ import { StoreState } from '../types/vuex.d';
 
 function zoomInitialState() {
   return {
+    showDiffstat: true,
     showAllCommitMessageBody: true,
     commitsSortType: CommitsSortType.Time,
     toReverseSortedCommits: true,
@@ -387,6 +389,10 @@ export default defineComponent({
         return window.getCommitLink(slice.repoId, slice.hash);
       }
       return window.getCommitLink(this.info.zUser!.repoId, slice.hash);
+    },
+
+    toggleDiffstat(isVisible: boolean) {
+      this.showDiffstat = isVisible;
     },
 
     scrollToCommit(tag: string, commit: string) {
