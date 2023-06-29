@@ -132,12 +132,11 @@
       .body(v-if="slice.messageBody !== ''", v-show="slice.isOpen")
         pre {{ slice.messageBody }}
           .dashed-border
-      .summary-charts
-        c-stacked-bar-chart(
-          v-bind:is-commit-diff="true",
-          v-bind:diffstat="getCommitDiffstatWidths(slice)",
-          v-bind:user="filteredUser",
-        )
+      c-stacked-bar-chart(
+        v-bind:is-commit-diff="true",
+        v-bind:diffstat="getCommitDiffstatWidths(slice)",
+        v-bind:user="filteredUser",
+      )
 
 </template>
 
@@ -330,6 +329,8 @@ export default defineComponent({
       const { insertions, deletions } = slice;
       const contributionPerFullBar = 1000;
 
+      // this.info.zAvgRepoContributionSize;
+
       // this.getTotalChangesInRepo();
 
       // parseInt(this.info.zAvgCommitSize.toString(), 10);
@@ -337,7 +338,7 @@ export default defineComponent({
       // this.getAvgContributionSize();
 
       const result: { [key: string]: number[] } = {};
-      // if (contributionPerFullBar === 0) {
+      // if (contributionPerFullBar === 0 || contributionPerFullBar === undefined) {
       //   return result;
       // }
 

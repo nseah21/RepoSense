@@ -15,9 +15,10 @@
         )
     template(v-else-if="isCommitDiff")
       .summary-chart__contrib(
-        v-for="(width, color) in diffstat"
+        v-for="(barWidths, color) in diffstat"
       )
         .summary-chart__contrib--bar(
+          v-for="width in barWidths",
           v-bind:style="{ width: `${width}%`,\
           'background-color': color }",
         )

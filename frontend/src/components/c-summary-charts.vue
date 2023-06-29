@@ -549,6 +549,7 @@ export default defineComponent({
         zFileTypeColors: this.fileTypeColors,
         zFromRamp: false,
         zFilterSearch: filterSearch,
+        zAvgRepoContributionSize: this.getAvgRepoContributionSize(user, since, until),
       };
       this.addSelectedTab(user.name, user.repoName, 'zoom', isMerged);
       this.$store.commit('updateTabZoomInfo', info);
@@ -784,6 +785,31 @@ export default defineComponent({
       return explanation;
     },
 
+    getAvgRepoContributionSize(user: User, since: string, until: string) {
+      // for all users in the same repo?
+      const startDate = new Date(since).getTime();
+      const endDate = new Date(until).getTime();
+
+      let totalContribution = 0;
+      let totalCommits = 0;
+      const repos = this.filteredRepos;
+      for (let i = 0; i < repos.length; i += 1) {
+        const repo = repos[i];
+        for (let j = 0; j < repo.length; j += 1) {
+          const author = repo[j];
+          if (user.repoId === author.repoId) {
+            for (let k = 0; k < author.commits.length; k += 1) {
+              const commitDate = new Date(author.commits[k].date).getTime();
+              if (commitDate > startDate && commitDate < endDate) {
+                totalContribution += author.commits[k].insertions + author.commits[k].deletions;
+                totalCommits += 1;
+              }
+            }
+          }
+        }
+      }
+      return totalContribution / totalCommits;
+    },
   },
 });
 </script>
