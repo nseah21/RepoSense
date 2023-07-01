@@ -4,6 +4,8 @@ import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 import org.gradle.api.tasks.testing.Test
+import com.github.psxpaul.task.JavaExecFork
+import org.gradle.api.tasks.Copy
 
 plugins {
     application
@@ -75,14 +77,14 @@ val zipReport = tasks.register<Zip>("zipReport") {
     destinationDirectory.set(file("src/main/resources"))
 }
 
-tasks.register<Copy>("copyCypressConfig") {
+val copyCypressConfig = tasks.register<Copy>("copyCypressConfig") {
     description = "Copies the config files used by the backend to generate the test report for Cypress testing into an isolated working directory"
 
     from("frontend/cypress/config/")
     into("build/serveTestReport/exampleconfig/")
 }
 
-tasks.register<Copy>("copyMainClasses") {
+val copyMainClasses = tasks.register<Copy>("copyMainClasses") {
     description = "Copies the backend classes used to generate the test report for Cypress testing into an isolated working directory"
     // setDependsOn(listOf(classes))
 
@@ -90,7 +92,11 @@ tasks.register<Copy>("copyMainClasses") {
     into("build/serveTestReport/java/main/")
 }
 
-//val compileJava = tasks.compileJava
+val compileJava = tasks.compileJava
+
+val processResources = tasks.named<ProcessResources>("processResources").configure {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
 
 // tasks.named<ProcessResources>("processSystemtestResources").configure {
 //     duplicatesStrategy = DuplicatesStrategy.INCLUDE
@@ -212,6 +218,150 @@ tasks.register<Test>("systemtest") {
 //    }
 }
 
-val serveTestReportInBackground = tasks.register("") {
+val serveTestReportInBackground = tasks.register<JavaExecFork>("serveTestReportInBackground") {
+    description = "Creates a background server process for the test report that is to be used by Cypress"
+    dependsOn(
+        tasks.getByName("zipReport"),
+        tasks.getByName("compileJava"),
+        tasks.getByName("processResources"),
+        tasks.getByName("copyCypressConfig"),
+        tasks.getByName("copyMainClasses")
+    )
 
+//
+//    tasks.compileJava {
+//        mustRunAfter(zipReport)
+//    }
+//    tasks.processResources {
+//        mustRunAfter(zipReport)
+//    }
+//
+    setWorkingDir("build/serveTestReport/")
+    main = application.mainClassName
+    classpath = sourceSets.getByName("main").runtimeClasspath
+    args = listOf("--config", "./exampleconfig", "--since", "d1", "--view").toMutableList()
+//
+//    jvmArgs = listOf(versionJvmArgs)
+//    killDescendants = false
+//    waitForPort = 9000
 }
+
+val installCypress = tasks.register<Exec>("installCypress") {
+    setCommandLine("npm.cmd")
+
+    setWorkingDir("frontend/cypress/")
+    setArgs(listOf("ci"))
+}
+
+tasks.register<Exec>("cypress") {
+    dependsOn(listOf(installCypress, serveTestReportInBackground))
+//    tasks.named("serveTestReportInBackground") {
+//        mustRunAfter(installCypress)
+//    }
+
+    setWorkingDir("frontend/cypress")
+    setArgs(listOf("run-script", "debug"))
+}
+
+tasks.register<Exec>("frontendTest") {
+    setDependsOn(listOf(installCypress, serveTestReportInBackground))
+//    tasks.named("serveTestReportInBackground").mustRunAfter(installCypress)
+
+    setWorkingDir("frontend/cypress/")
+    setArgs(listOf("run-script", "tests"))
+    if (project.hasProperty("ci")) {
+        setArgs(listOf("run-script", "ci"))
+    }
+
+    setCommandLine("cmd")
+}
+
+tasks.withType<Copy>() {
+    includeEmptyDirs = true
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+//jacocoTestReport.configure {
+//    reports {
+//        html.required.set(true)
+//    }
+//}
+
+tasks.register<JacocoReport>("coverage").configure {
+    sourceDirectories.from(files(sourceSets.getByName("main").allSource.srcDirs))
+    classDirectories.from(files(sourceSets.getByName("main").output))
+//    executionData.from(files(jacocoTestReport.executionData))
+
+//    afterEvaluate {
+//        classDirectories.from(
+//            files(classDirectories.files.collect { dir -> fileTree(dir) { exclude("**/*.jar") } })
+//        )
+//    }
+
+    reports {
+        html.required.set(true)
+        xml.required.set(true)
+    }
+}
+
+//fun getReposenseVersion(): String {
+//    var reposenseVersion = project.property("version") as String
+//    if (reposenseVersion.equals("unspecified")) {
+//        reposenseVersion = versionDetails().commitDistance == 0
+//        ? versionDetails().lastTag
+//        : versionDetails().gitHash
+//    }
+//    return reposenseVersion
+//}
+
+val syncFrontendPublic = tasks.register<Sync>("syncFrontendPublic") {
+    from("reposense-report")
+    into("reposense/public/")
+    include("**/*.json")
+    includeEmptyDirs = false
+    preserve {
+        include("index.html")
+        include("favicon.ico")
+    }
+}
+
+val macHotReloadFrontend = tasks.register<Exec>("macHotReloadFrontend") {
+    setDependsOn(listOf(installFrontend))
+    onlyIf {os.isMacOsX()}
+
+    setWorkingDir("frontend/")
+    setCommandLine("npm", "run", "serveOpen")
+}
+
+val windowsHotReloadFrontend = tasks.register<Exec>("windowsHotReloadFrontend") {
+    setDependsOn(listOf(installFrontend))
+    onlyIf {os.isWindows()}
+    setWorkingDir("frontend/")
+    setCommandLine("cmd", "/c", "START", "'hotreload RepoSense frontend'", "npm", "run", "serveOpen")
+}
+
+val linuxHotReloadFrontend = tasks.register<Exec>("linuxHotReloadFrontend") {
+    setDependsOn(listOf(installFrontend))
+    onlyIf {os.isLinux()}
+
+    setWorkingDir("frontend/")
+    setCommandLine("npm", "run", "serveOpen")
+}
+
+tasks.register("hotReloadFrontend") {
+    setDependsOn(listOf(syncFrontendPublic))
+    finalizedBy(macHotReloadFrontend)
+    finalizedBy(windowsHotReloadFrontend)
+    finalizedBy(linuxHotReloadFrontend)
+}
+
+fun deleteReposAddressDirectory() {
+    val REPOS_ADDRESS = "repos"
+    val reposDirectory = File(REPOS_ADDRESS)
+    reposDirectory.deleteRecursively()
+}
+
+defaultTasks("clean", "build", "systemTest", "frontendTest", "coverage")
