@@ -24,7 +24,7 @@ plugins {
 val os: OperatingSystem = DefaultNativePlatform.getCurrentOperatingSystem()
 
 application {
-    mainClassName = "reposense.RepoSense"
+    mainClass.set("reposense.RepoSense")
 }
 
 node {
@@ -142,7 +142,7 @@ idea {
         sourceSets {
             named("systemtest") {
                 allSource.srcDirs.forEach { srcDir ->
-                    testSourceDirs.plusAssign(srcDir)
+                    testSourceDirs = testSourceDirs.plus(srcDir)
                 }
             }
         }
@@ -260,7 +260,7 @@ val serveTestReportInBackground = tasks.register<JavaExecFork>("serveTestReportI
     )
 
     setWorkingDir("build/serveTestReport/")
-    main = application.mainClassName
+    main = application.getMainClass().get()
     classpath = sourceSets.getByName("main").runtimeClasspath
     args = listOf("--config", "./exampleconfig", "--since", "d1", "--view").toMutableList()
 
@@ -273,10 +273,10 @@ val serveTestReportInBackground = tasks.register<JavaExecFork>("serveTestReportI
 }
 
 val installCypress = tasks.register<Exec>("installCypress") {
-    setCommandLine("npm.cmd")
+    setCommandLine("cmd")
 
     setWorkingDir("frontend/cypress/")
-    setArgs(listOf("ci"))
+    setArgs(listOf("/c", "npm", "ci", "--production", "false", "--loglevel", "info", "--progress", "true"))
 }
 
 tasks.named("serveTestReportInBackground") {
