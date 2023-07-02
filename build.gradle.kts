@@ -119,11 +119,12 @@ tasks.named<ProcessResources>("processSystemtestResources").configure {
  duplicatesStrategy = DuplicatesStrategy.INCLUDE
 }
 
+tasks.compileJava {
+    mustRunAfter(zipReport)
+}
+
 tasks.named("run") {
     dependsOn(zipReport)
-    tasks.compileJava {
-        mustRunAfter(zipReport)
-    }
     /* The second arguments indicate the default value associated with the property. */
     doFirst {
         val args = System.getProperty("args", "").split("")
