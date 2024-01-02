@@ -58,11 +58,11 @@ public class ArgsParser {
     public static final String[] VERSION_FLAGS = new String[] {"--version", "-V"};
     public static final String[] LAST_MODIFIED_DATE_FLAGS = new String[] {"--last-modified-date", "-l"};
     public static final String[] FIND_PREVIOUS_AUTHORS_FLAGS = new String[] {"--find-previous-authors", "-F"};
+    public static final String[] PRETTY_PRINT_JSON_FLAGS = new String[] {"--use-json-pretty-printing", "-P"};
 
     public static final String[] CLONING_THREADS_FLAG = new String[] {"--cloning-threads"};
     public static final String[] ANALYSIS_THREADS_FLAG = new String[] {"--analysis-threads"};
 
-    public static final String[] TEST_MODE_FLAG = new String[] {"--test-mode"};
     public static final String[] FRESH_CLONING_FLAG = new String[] {"--fresh-cloning"};
 
     private static final Logger logger = LogsManager.getLogger(ArgsParser.class);
@@ -197,6 +197,11 @@ public class ArgsParser {
                         + "will attempt to blame the line changes caused by commits in the ignore commit list to the "
                         + "previous authors who altered those lines (if available)");
 
+        parser.addArgument(PRETTY_PRINT_JSON_FLAGS)
+                .dest(PRETTY_PRINT_JSON_FLAGS[0])
+                .action(Arguments.storeTrue())
+                .help("A flag to enable pretty printing for the generated .json files.");
+
         // Mutex flags - these will always be the last parameters in help message.
         mutexParser.addArgument(CONFIG_FLAGS)
                 .dest(CONFIG_FLAGS[0])
@@ -237,11 +242,6 @@ public class ArgsParser {
                 .help(FeatureControl.SUPPRESS);
 
         // Testing flags
-        argumentGroup.addArgument(TEST_MODE_FLAG)
-                .dest(TEST_MODE_FLAG[0])
-                .action(Arguments.storeTrue())
-                .help("Enables testing mode.");
-
         argumentGroup.addArgument(FRESH_CLONING_FLAG)
                 .dest(FRESH_CLONING_FLAG[0])
                 .action(Arguments.storeTrue())
@@ -274,7 +274,7 @@ public class ArgsParser {
             boolean shouldIncludeLastModifiedDate = results.get(LAST_MODIFIED_DATE_FLAGS[0]);
             boolean shouldPerformShallowCloning = results.get(SHALLOW_CLONING_FLAGS[0]);
             boolean shouldFindPreviousAuthors = results.get(FIND_PREVIOUS_AUTHORS_FLAGS[0]);
-            boolean isTestMode = results.get(TEST_MODE_FLAG[0]);
+            boolean shouldUseJsonPrettyPrinting = results.get(PRETTY_PRINT_JSON_FLAGS[0]);
             int numCloningThreads = results.get(CLONING_THREADS_FLAG[0]);
             int numAnalysisThreads = results.get(ANALYSIS_THREADS_FLAG[0]);
 
@@ -293,7 +293,7 @@ public class ArgsParser {
                     .isFindingPreviousAuthorsPerformed(shouldFindPreviousAuthors)
                     .numCloningThreads(numCloningThreads)
                     .numAnalysisThreads(numAnalysisThreads)
-                    .isTestMode(isTestMode);
+                    .shouldUseJsonPrettyPrinting(shouldUseJsonPrettyPrinting);
 
             LogsManager.setLogFolderLocation(outputFolderPath);
 
@@ -317,9 +317,7 @@ public class ArgsParser {
             cliArgumentsBuilder.isAutomaticallyLaunching(isAutomaticallyLaunching);
 
 
-            boolean shouldPerformFreshCloning = isTestMode
-                    ? results.get(FRESH_CLONING_FLAG[0])
-                    : DEFAULT_SHOULD_FRESH_CLONE;
+            boolean shouldPerformFreshCloning = DEFAULT_SHOULD_FRESH_CLONE;
             cliArgumentsBuilder.isFreshClonePerformed(shouldPerformFreshCloning);
 
             return cliArgumentsBuilder.build();

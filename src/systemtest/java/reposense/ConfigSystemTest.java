@@ -145,7 +145,6 @@ public class ConfigSystemTest {
         return new InputBuilder().addConfig(configFolder)
                 .addFormats(formats)
                 .addTimezone(TEST_TIME_ZONE)
-                .addTestMode()
                 .addOutput(OUTPUT_DIRECTORY);
     }
 

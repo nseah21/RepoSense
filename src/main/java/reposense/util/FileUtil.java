@@ -61,6 +61,8 @@ public class FileUtil {
     private static final String MESSAGE_FAIL_TO_COPY_ASSETS =
             "Exception occurred while attempting to copy custom assets.";
 
+    private static boolean shouldUseJsonPrettyPrinting = false;
+
     /**
      * Zips all files of type {@code fileTypes} that are in the directory {@code pathsToZip} into a single file and
      * output it to {@code sourceAndOutputPath}.
@@ -103,7 +105,13 @@ public class FileUtil {
      * was an error while writing the JSON file.
      */
     public static Optional<Path> writeJsonFile(Object object, String path) {
-        Gson gson = new GsonBuilder()
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        if (FileUtil.shouldUseJsonPrettyPrinting) {
+            gsonBuilder = gsonBuilder.setPrettyPrinting();
+        }
+
+        Gson gson = gsonBuilder
                 .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (date, typeOfSrc, context)
                         -> new JsonPrimitive(date.format(DateTimeFormatter.ofPattern(GITHUB_API_DATE_FORMAT))))
                 .registerTypeAdapter(FileType.class, new FileType.FileTypeSerializer())
@@ -390,5 +398,9 @@ public class FileUtil {
             isValidPathLocation = false;
         }
         return isValidPathLocation;
+    }
+
+    public static void setJsonPrettyPrinting(boolean shouldUseJsonPrettyPrinting) {
+        FileUtil.shouldUseJsonPrettyPrinting = shouldUseJsonPrettyPrinting;
     }
 }

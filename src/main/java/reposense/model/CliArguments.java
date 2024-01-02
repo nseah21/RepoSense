@@ -35,6 +35,7 @@ public class CliArguments {
     private final int numAnalysisThreads;
     private final ZoneId zoneId;
     private final boolean isFindingPreviousAuthorsPerformed;
+    private boolean shouldUseJsonPrettyPrinting;
     private boolean isTestMode = ArgsParser.DEFAULT_IS_TEST_MODE;
     private boolean isFreshClonePerformed = ArgsParser.DEFAULT_SHOULD_FRESH_CLONE;
 
@@ -68,6 +69,7 @@ public class CliArguments {
         this.numAnalysisThreads = builder.numAnalysisThreads;
         this.zoneId = builder.zoneId;
         this.isFindingPreviousAuthorsPerformed = builder.isFindingPreviousAuthorsPerformed;
+        this.shouldUseJsonPrettyPrinting = builder.shouldUseJsonPrettyPrinting;
         this.isTestMode = builder.isTestMode;
         this.isFreshClonePerformed = builder.isFreshClonePerformed;
         this.locations = builder.locations;
@@ -153,6 +155,10 @@ public class CliArguments {
         return isFreshClonePerformed;
     }
 
+    public boolean shouldUseJsonPrettyPrinting() {
+        return shouldUseJsonPrettyPrinting;
+    }
+
     public List<String> getLocations() {
         return locations;
     }
@@ -213,6 +219,7 @@ public class CliArguments {
                 && this.isShallowCloningPerformed == otherCliArguments.isShallowCloningPerformed
                 && this.isAutomaticallyLaunching == otherCliArguments.isAutomaticallyLaunching
                 && this.isStandaloneConfigIgnored == otherCliArguments.isStandaloneConfigIgnored
+                && this.shouldUseJsonPrettyPrinting == otherCliArguments.shouldUseJsonPrettyPrinting
                 && this.numCloningThreads == otherCliArguments.numCloningThreads
                 && this.numAnalysisThreads == otherCliArguments.numAnalysisThreads
                 && Objects.equals(this.zoneId, otherCliArguments.zoneId)
@@ -253,6 +260,7 @@ public class CliArguments {
         private boolean isFreshClonePerformed;
         private List<String> locations;
         private boolean isViewModeOnly;
+        private boolean shouldUseJsonPrettyPrinting;
         private Path reportDirectoryPath;
         private Path configFolderPath;
         private Path repoConfigFilePath;
@@ -425,22 +433,22 @@ public class CliArguments {
         }
 
         /**
-         * Adds the {@code isTestMode} to CliArguments.
-         *
-         * @param isTestMode Is test mode.
-         */
-        public Builder isTestMode(boolean isTestMode) {
-            this.isTestMode = isTestMode;
-            return this;
-        }
-
-        /**
          * Adds the {@code isFreshClonePerformed} to CliArguments.
          *
          * @param isFreshClonePerformed Is fresh clone performed.
          */
         public Builder isFreshClonePerformed(boolean isFreshClonePerformed) {
             this.isFreshClonePerformed = isFreshClonePerformed;
+            return this;
+        }
+
+        /**
+         * Adds the {@code shouldUseJsonPrettyPrinting} to CliArguments.
+         *
+         * @param shouldUseJsonPrettyPrinting Should use JSON pretty printing.
+         */
+        public Builder shouldUseJsonPrettyPrinting(boolean shouldUseJsonPrettyPrinting) {
+            this.shouldUseJsonPrettyPrinting = shouldUseJsonPrettyPrinting;
             return this;
         }
 
