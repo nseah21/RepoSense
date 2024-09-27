@@ -13,39 +13,39 @@ public class ErrorSummaryTest {
         String invalidLocation2 = "https://github.com/contains-illegal-chars/^\\/";
         String invalidLocation3 = "not-valid-protocol://abc.com/reposense/RepoSense.git";
 
-        ErrorSummary errorSummaryInstance = ErrorSummary.getInstance();
+        ErrorSummary errorSummaryInstance = new ErrorSummary();
         errorSummaryInstance.clearErrorSet();
 
         try {
-            new RepoLocation(invalidLocation1);
+            new RepoLocation(invalidLocation1, errorSummaryInstance);
         } catch (InvalidLocationException e) {
             // not relevant to the test
         }
         Assertions.assertEquals(1, errorSummaryInstance.getErrorSet().size());
 
         try {
-            new RepoLocation(invalidLocation1);
+            new RepoLocation(invalidLocation1, errorSummaryInstance);
         } catch (InvalidLocationException e) {
             // not relevant to the test
         }
         Assertions.assertEquals(1, errorSummaryInstance.getErrorSet().size());
 
         try {
-            new RepoLocation(invalidLocation2);
+            new RepoLocation(invalidLocation2, errorSummaryInstance);
         } catch (InvalidLocationException e) {
             // not relevant to the test
         }
         Assertions.assertEquals(2, errorSummaryInstance.getErrorSet().size());
 
         try {
-            new RepoLocation(invalidLocation1);
+            new RepoLocation(invalidLocation1, errorSummaryInstance);
         } catch (InvalidLocationException e) {
             // not relevant to the test
         }
         Assertions.assertEquals(2, errorSummaryInstance.getErrorSet().size());
 
         try {
-            new RepoLocation(invalidLocation3);
+            new RepoLocation(invalidLocation3, errorSummaryInstance);
         } catch (InvalidLocationException e) {
             // not relevant to the test
         }

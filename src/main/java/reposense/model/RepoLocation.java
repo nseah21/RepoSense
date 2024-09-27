@@ -55,18 +55,22 @@ public class RepoLocation {
     private final transient String outputFolderRepoName;
     private final transient String outputFolderOrganization;
 
+    private final ErrorSummary errorSummary;
+
     /**
      * Creates {@link RepoLocation} based on the {@code location}, which is represented by a {@code URL}
      * or {@link Path}.
      *
      * @throws InvalidLocationException if {@code location} cannot be represented by a {@code URL} or {@link Path}.
      */
-    public RepoLocation(String location) throws InvalidLocationException {
+    public RepoLocation(String location, ErrorSummary errorSummary) throws InvalidLocationException {
         if (SystemUtil.isWindows()) {
             location = StringsUtil.removeTrailingBackslash(location);
         }
 
         this.location = location;
+        this.errorSummary = errorSummary;
+
         String[] remoteRepoNameAndOrg;
         String[] outputFolderRepoNameAndOrg;
         if (location.isEmpty()) {
@@ -159,7 +163,7 @@ public class RepoLocation {
         Matcher localRepoMatcher = localRepoPattern.matcher(location);
 
         if (!localRepoMatcher.matches()) {
-            ErrorSummary.getInstance().addErrorMessage(location,
+            errorSummary.addErrorMessage(location,
                     String.format(MESSAGE_INVALID_LOCATION, location));
             throw new InvalidLocationException(String.format(MESSAGE_INVALID_LOCATION, location));
         }
@@ -185,14 +189,14 @@ public class RepoLocation {
             try {
                 new URI(location);
             } catch (URISyntaxException e) {
-                ErrorSummary.getInstance().addErrorMessage(location,
+                errorSummary.addErrorMessage(location,
                         String.format(MESSAGE_INVALID_REMOTE_URL, location));
                 throw new InvalidLocationException(String.format(MESSAGE_INVALID_REMOTE_URL, location));
             }
         }
         boolean isValidRemoteRepoUrl = remoteRepoMatcher.matches() || sshRepoMatcher.matches();
         if (!isValidRemoteRepoUrl) {
-            ErrorSummary.getInstance().addErrorMessage(location,
+            errorSummary.addErrorMessage(location,
                     String.format(MESSAGE_INVALID_REMOTE_URL, location));
             throw new InvalidLocationException(String.format(MESSAGE_INVALID_REMOTE_URL, location));
         }

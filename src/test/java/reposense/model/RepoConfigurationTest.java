@@ -18,6 +18,7 @@ import reposense.parser.ArgsParser;
 import reposense.parser.AuthorConfigCsvParser;
 import reposense.parser.GroupConfigCsvParser;
 import reposense.parser.RepoConfigCsvParser;
+import reposense.report.ErrorSummary;
 import reposense.report.ReportGenerator;
 import reposense.util.InputBuilder;
 import reposense.util.TestRepoCloner;
@@ -110,7 +111,8 @@ public class RepoConfigurationTest {
         expectedAuthors.add(THIRD_AUTHOR);
         expectedAuthors.add(FOURTH_AUTHOR);
 
-        repoDeltaStandaloneConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        repoDeltaStandaloneConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaStandaloneConfig.setAuthorList(expectedAuthors);
         repoDeltaStandaloneConfig.addAuthorNamesToAuthorMapEntry(FIRST_AUTHOR, FIRST_AUTHOR_ALIASES);
         repoDeltaStandaloneConfig.addAuthorNamesToAuthorMapEntry(FOURTH_AUTHOR, FOURTH_AUTHOR_ALIASES);
@@ -130,7 +132,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_usesStandaloneConfig_success() throws Exception {
-        RepoConfiguration actualConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration actualConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         TestRepoCloner.cloneAndBranch(actualConfig);
         reportGenerator.updateRepoConfig(actualConfig);
 
@@ -144,7 +147,8 @@ public class RepoConfigurationTest {
         author.setIgnoreGlobList(REPO_LEVEL_GLOB_LIST);
         expectedAuthors.add(author);
 
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setAuthorList(expectedAuthors);
         expectedConfig.addAuthorNamesToAuthorMapEntry(author, FIRST_AUTHOR_ALIASES);
         expectedConfig.setAuthorDisplayName(author, "Ahm");
@@ -174,7 +178,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_ignoresStandaloneConfigInCli_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         expectedConfig.setStandaloneConfigIgnored(true);
 
@@ -202,11 +207,11 @@ public class RepoConfigurationTest {
     public void repoConfig_ignoreStandaloneConfigInCli_overrideCsv() throws Exception {
 
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
 
         String input = new InputBuilder().addConfig(IGNORE_STANDALONE_FLAG_OVERRIDE_CSV_TEST)
@@ -230,7 +235,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_ignoreFileSizeLimit_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setIgnoreGlobList(REPO_LEVEL_GLOB_LIST);
         expectedConfig.setFormats(CONFIG_FORMATS);
         expectedConfig.setStandaloneConfigIgnored(true);
@@ -256,12 +262,12 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_ignoreFileSizeLimitInCli_overrideCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         repoBetaExpectedConfig.setFileSizeLimitIgnored(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
         repoDeltaExpectedConfig.setFileSizeLimitIgnored(true);
 
@@ -288,7 +294,7 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_withoutIgnoreStandaloneConfigInCli_useCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
 
@@ -329,7 +335,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_shallowCloning_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setIgnoreGlobList(REPO_LEVEL_GLOB_LIST);
         expectedConfig.setFormats(CONFIG_FORMATS);
         expectedConfig.setStandaloneConfigIgnored(true);
@@ -354,7 +361,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_shallowCloningInCli_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         expectedConfig.setStandaloneConfigIgnored(true);
         expectedConfig.setIsShallowCloningPerformed(true);
@@ -383,12 +391,12 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_shallowCloningInCli_overrideCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         repoBetaExpectedConfig.setIsShallowCloningPerformed(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
         repoDeltaExpectedConfig.setIsShallowCloningPerformed(true);
 
@@ -415,12 +423,12 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_withoutShallowCloningInInCli_useCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         repoBetaExpectedConfig.setIsShallowCloningPerformed(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
 
         String input = new InputBuilder().addConfig(SHALLOW_CLONING_FLAG_OVERRIDE_TEST_CONFIG_FILES).build();
@@ -443,7 +451,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_findPreviousAuthors_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setIgnoreGlobList(REPO_LEVEL_GLOB_LIST);
         expectedConfig.setFormats(CONFIG_FORMATS);
         expectedConfig.setStandaloneConfigIgnored(true);
@@ -468,7 +477,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_findPreviousAuthorsInCli_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         expectedConfig.setStandaloneConfigIgnored(true);
         expectedConfig.setIsFindingPreviousAuthorsPerformed(true);
@@ -497,12 +507,12 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_findPreviousAuthorsInCli_overrideCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         repoBetaExpectedConfig.setIsFindingPreviousAuthorsPerformed(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
         repoDeltaExpectedConfig.setIsFindingPreviousAuthorsPerformed(true);
 
@@ -529,12 +539,12 @@ public class RepoConfigurationTest {
     @Test
     public void repoConfig_withoutFindPreviousAuthorsInCli_useCsv() throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         repoBetaExpectedConfig.setIsFindingPreviousAuthorsPerformed(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
 
         String input = new InputBuilder().addConfig(FIND_PREVIOUS_AUTHORS_FLAG_OVERRIDE_TEST_CONFIG_FILES).build();
@@ -559,11 +569,11 @@ public class RepoConfigurationTest {
     public void repoConfig_userEnvironmentCannotRunFindPreviousAuthors_setFindPreviousAuthorsToFalseInAllRepoConfigs()
             throws Exception {
         RepoConfiguration repoBetaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_BETA), "master");
+                new RepoLocation(TEST_REPO_BETA, new ErrorSummary()), "master");
         repoBetaExpectedConfig.setFormats(FileType.convertFormatStringsToFileTypes(CLI_FORMATS));
         repoBetaExpectedConfig.setStandaloneConfigIgnored(true);
         RepoConfiguration repoDeltaExpectedConfig = new RepoConfiguration(
-                new RepoLocation(TEST_REPO_DELTA), "master");
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         repoDeltaExpectedConfig.setStandaloneConfigIgnored(true);
 
         String input = new InputBuilder().addConfig(FIND_PREVIOUS_AUTHORS_FLAG_OVERRIDE_TEST_CONFIG_FILES).build();
@@ -651,9 +661,12 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_emptyLocationDifferentBranch_equal() throws Exception {
-        RepoConfiguration emptyLocationEmptyBranchRepoConfig = new RepoConfiguration(new RepoLocation(""), "");
-        RepoConfiguration emptyLocationDefaultBranchRepoConfig = new RepoConfiguration(new RepoLocation(""));
-        RepoConfiguration emptyLocationWithBranchRepoConfig = new RepoConfiguration(new RepoLocation(""), "master");
+        RepoConfiguration emptyLocationEmptyBranchRepoConfig = new RepoConfiguration(
+                new RepoLocation("", new ErrorSummary()), "");
+        RepoConfiguration emptyLocationDefaultBranchRepoConfig = new RepoConfiguration(
+                new RepoLocation("", new ErrorSummary()));
+        RepoConfiguration emptyLocationWithBranchRepoConfig = new RepoConfiguration(
+                new RepoLocation("", new ErrorSummary()), "master");
 
         Assertions.assertEquals(emptyLocationDefaultBranchRepoConfig, emptyLocationEmptyBranchRepoConfig);
         Assertions.assertEquals(emptyLocationWithBranchRepoConfig, emptyLocationEmptyBranchRepoConfig);
@@ -661,17 +674,18 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_sameLocationDifferentBranch_notEqual() throws Exception {
-        RepoConfiguration validLocationValidBranchRepoConfig =
-                new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
-        RepoConfiguration validLocationDefaultBranchRepoConfig =
-                new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA));
+        RepoConfiguration validLocationValidBranchRepoConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
+        RepoConfiguration validLocationDefaultBranchRepoConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()));
 
         Assertions.assertNotEquals(validLocationDefaultBranchRepoConfig, validLocationValidBranchRepoConfig);
     }
 
     @Test
     public void repoConfig_overrideStandaloneConfig_success() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master",
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master",
                 Collections.emptyList(), Collections.emptyList(), RepoConfiguration.DEFAULT_FILE_SIZE_LIMIT, false,
                 false, Collections.emptyList(), true, true, true, false, false, false, false,
                 Arrays.asList("lithiumlkid"), true);
@@ -711,7 +725,8 @@ public class RepoConfigurationTest {
 
     @Test
     public void repoConfig_minimalStandaloneConfig_fieldsAssignedDefaultValues() throws Exception {
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_MINIMAL_STANDALONE_CONFIG),
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_MINIMAL_STANDALONE_CONFIG, new ErrorSummary()),
                 "master");
 
         Author firstAuthor = new Author("bluein-green");
@@ -723,7 +738,8 @@ public class RepoConfigurationTest {
         expectedConfig.setFormats(Collections.emptyList());
         expectedConfig.setIgnoreCommitList(Collections.emptyList());
 
-        RepoConfiguration actualConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_MINIMAL_STANDALONE_CONFIG),
+        RepoConfiguration actualConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_MINIMAL_STANDALONE_CONFIG, new ErrorSummary()),
                 "master");
         TestRepoCloner.cloneAndBranch(actualConfig);
         reportGenerator.updateRepoConfig(actualConfig);
@@ -738,7 +754,8 @@ public class RepoConfigurationTest {
         author.setIgnoreGlobList(REPO_LEVEL_GLOB_LIST);
         expectedAuthors.add(author);
 
-        RepoConfiguration expectedConfig = new RepoConfiguration(new RepoLocation(TEST_REPO_DELTA), "master");
+        RepoConfiguration expectedConfig = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_DELTA, new ErrorSummary()), "master");
         expectedConfig.setAuthorList(expectedAuthors);
         expectedConfig.addAuthorNamesToAuthorMapEntry(author, FIRST_AUTHOR_ALIASES);
         expectedConfig.setAuthorDisplayName(author, "Ahm");

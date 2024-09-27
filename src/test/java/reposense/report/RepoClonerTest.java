@@ -22,7 +22,7 @@ public class RepoClonerTest {
     @Test
     public void repoCloner_emptyRepo_failsGracefully() throws Exception {
         RepoConfiguration emptyRepositoryRepoConfig =
-                new RepoConfiguration(new RepoLocation(TEST_REPO_EMPTY_GIT_LOCATION));
+                new RepoConfiguration(new RepoLocation(TEST_REPO_EMPTY_GIT_LOCATION, new ErrorSummary()));
 
         RepoCloner repoCloner = new RepoCloner();
         repoCloner.cloneBare(emptyRepositoryRepoConfig);
@@ -34,11 +34,12 @@ public class RepoClonerTest {
     @Test
     public void repoCloner_validRepoLocationWithRelativePathingAndSpaces_success() throws Exception {
         // Clones a test repository into the test directory for testing of relative pathing
-        RepoConfiguration tempRemoteConfiguration = new RepoConfiguration(new RepoLocation(TEST_REPO_GIT_LOCATION));
+        RepoConfiguration tempRemoteConfiguration = new RepoConfiguration(
+                new RepoLocation(TEST_REPO_GIT_LOCATION, new ErrorSummary()));
         TestRepoCloner.cloneBare(tempRemoteConfiguration, Paths.get("."), REPOCLONE_LOCAL_TEST_PATH.toString());
 
         RepoConfiguration repoWithRelativePathingAndSpacesAndEndingBackslash =
-                new RepoConfiguration(new RepoLocation(REPOCLONE_LOCAL_TEST_PATH.toString()));
+                new RepoConfiguration(new RepoLocation(REPOCLONE_LOCAL_TEST_PATH.toString(), new ErrorSummary()));
         RepoCloner repoCloner = new RepoCloner();
         repoCloner.cloneBare(repoWithRelativePathingAndSpacesAndEndingBackslash);
         Assertions.assertTrue(Files.exists(REPOCLONE_LOCAL_TEST_PATH));

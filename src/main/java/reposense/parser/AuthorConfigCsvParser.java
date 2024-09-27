@@ -10,6 +10,7 @@ import org.apache.commons.csv.CSVRecord;
 import reposense.model.Author;
 import reposense.model.AuthorConfiguration;
 import reposense.model.RepoLocation;
+import reposense.report.ErrorSummary;
 
 /**
  * Container for the values parsed from {@code author-config.csv} file.
@@ -121,7 +122,7 @@ public class AuthorConfigCsvParser extends CsvParser<AuthorConfiguration> {
      */
     private static AuthorConfiguration findMatchingAuthorConfiguration(List<AuthorConfiguration> results,
             String location, String branch) throws InvalidLocationException {
-        AuthorConfiguration config = new AuthorConfiguration(new RepoLocation(location), branch);
+        AuthorConfiguration config = new AuthorConfiguration(new RepoLocation(location, new ErrorSummary()), branch);
 
         for (AuthorConfiguration authorConfig : results) {
             if (authorConfig.getLocation().equals(config.getLocation())

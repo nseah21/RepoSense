@@ -10,6 +10,7 @@ import reposense.model.CommitHash;
 import reposense.model.FileType;
 import reposense.model.RepoConfiguration;
 import reposense.model.RepoLocation;
+import reposense.report.ErrorSummary;
 import reposense.util.FileUtil;
 import reposense.util.StringsUtil;
 
@@ -78,7 +79,8 @@ public class RepoConfigCsvParser extends CsvParser<RepoConfiguration> {
     protected void processLine(List<RepoConfiguration> results, CSVRecord record) throws InvalidLocationException {
         // The variable expansion is performed to simulate running the same location from command line.
         // This helps to support things like tilde expansion and other Bash/CMD features.
-        RepoLocation location = new RepoLocation(FileUtil.getVariableExpandedFilePath(get(record, LOCATION_HEADER)));
+        RepoLocation location = new RepoLocation(
+                FileUtil.getVariableExpandedFilePath(get(record, LOCATION_HEADER)), new ErrorSummary());
         String branch = getOrDefault(record, BRANCH_HEADER, RepoConfiguration.DEFAULT_BRANCH);
 
         boolean isFormatsOverriding = isElementOverridingStandaloneConfig(record, FILE_FORMATS_HEADER);

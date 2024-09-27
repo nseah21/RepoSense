@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 
 import reposense.parser.InvalidLocationException;
+import reposense.report.ErrorSummary;
 import reposense.util.AssertUtil;
 import reposense.util.SystemUtil;
 
@@ -38,7 +39,7 @@ public class RepoLocationTest {
 
     @Test
     public void repoLocation_parseEmptyString_success() throws Exception {
-        RepoLocation repoLocation = new RepoLocation("");
+        RepoLocation repoLocation = new RepoLocation("", new ErrorSummary());
     }
 
     @Test
@@ -196,13 +197,14 @@ public class RepoLocationTest {
      */
     public void assertParsableLocation(String rawLocation, String expectedRepoName,
             String expectedOrganization, String expectedDomainName) throws Exception {
-        RepoLocation repoLocation = new RepoLocation(rawLocation);
+        RepoLocation repoLocation = new RepoLocation(rawLocation, new ErrorSummary());
         Assertions.assertEquals(expectedRepoName, repoLocation.getRepoName());
         Assertions.assertEquals(expectedOrganization, repoLocation.getOrganization());
         Assertions.assertEquals(expectedDomainName, repoLocation.getDomainName());
     }
 
     private void assertUnparsableLocation(String rawLocation) {
-        AssertUtil.assertThrows(InvalidLocationException.class, () -> new RepoLocation(rawLocation));
+        AssertUtil.assertThrows(InvalidLocationException.class, () ->
+                new RepoLocation(rawLocation, new ErrorSummary()));
     }
 }
